@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' gap:; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/onsen.css" />
+    <link rel="stylesheet" type="text/css" href="css/onsen-css-components.min.css" />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="http://sdks.shopifycdn.com/js-buy-sdk/v1/latest/index.umd.min.js"></script>
+    <!-- <script src="https://sdks.shopifycdn.com/js-buy-sdk/latest/shopify-buy.polyfilled.globals.min.js"></script> -->
+    <script src = "js/buysdk.js"></script>
+    
+    <title>Hello World</title>
+</head>
+
+<body>
+
+    <div class="toolbar">
+        <div class="toolbar__left">
+          <span class="toolbar-button">
+              <span class="toolbar-button" onclick="Single_Back()">Back</span>
+          </span>
+        </div>
+    <div class="toolbar__center">CAMERA</div>
+  </div>
+  <div>
+    <br>
+    <button type="button" id="show_products">ALL PRODUCTS</button>
+    <br> <br> <br> 
+  </div>
+  <div id="Role_Type">
+
+  </div>
+
+  <button type="button" onclick="ADDPRODUCTS()" id="add_product">Add Product</button>
+  
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/onsenui.min.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/jquery_tmpl.js"></script>
+
+
+    
+</body>
+
+</html>
+
+
+<script>
+
+  function Single_Back() {
+    window.location="index.html";
+  }
+
+  function ADDPRODUCTS() {
+    Add_Product();
+  }
+  
+        // function camSuccess(imgData) {
+        //   console.log(imgData);
+        //   $("#image").attr("src","data:image/jpeg;base64,"+imgData);
+        //   $("#show_products").hide();
+          
+        // }
+
+        // function camError(error) {
+        //   alert(error);
+        // }
+
+        // function accessCamera() {
+        //   var options = {
+        //     destinationType: Camera.DestinationType.FILE_URI,
+        //     sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
+        //     quality: 50
+        //   };
+
+        //   navigator.camera.getPicture(camSuccess, camError, options);
+        // }
+
+        $("#show_products").on("click", function(){
+
+          var OnSuccess=function(res){
+             var a=filteringProduct(res.products);
+             $("#show_products").hide();
+             $("#add_product").hide();
+             console.log(JSON.stringify(a));
+             var obj= {
+               products:a
+             }
+             var OptionTemplate=$("#options_template").tmpl(obj);    
+          $("#Role_Type").html(OptionTemplate);
+          }
+          submitAjaxRequest("https://labratz.myshopify.com/products.json","GET","",OnSuccess) ;
+          
+        });
+
+        function show_product(product_id){
+          window.location="product_info.html?id="+product_id;
+        }
+
+</script>
+<script id="options_template" type="text/x-jquery-tmpl">
+  {{each(i,v) products}}
+  <div id="" onclick="show_product('${v.product_ID}')">
+    <img height='100px' width='100px' src="${v.src}"/><br><br>
+    <label>TITLE:${v.title}</label><br><br>
+    <label>PRICE:${v.price}</label><br><br>
+  </div>
+  {{/each}}
+
+</script>
